@@ -10,7 +10,6 @@
  */
 
 
-#include <iostream>
 #include "lvectors.h"
 
 int main()
