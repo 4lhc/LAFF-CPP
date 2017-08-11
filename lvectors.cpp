@@ -28,7 +28,7 @@ int main()
 
     LaffVector xc{5};
     //COPY
-    xc = xc.LaffCopy(x);
+    xc = xc.Copy(x);
     std::cout << "xc " << xc;
 
     //Define a LaffVector z with a vector
