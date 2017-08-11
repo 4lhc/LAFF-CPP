@@ -25,6 +25,7 @@ class LaffVector
     friend LaffVector operator+(const LaffVector &v1, const LaffVector &v2); //Add
     friend double Dot(const LaffVector &v1, const LaffVector &v2);
     friend double Norm2(const LaffVector &v);
+    friend std::ostream &operator<<(std::ostream &os, const LaffVector &v);
 
     private:
         std::vector<double> _lvector{};
@@ -36,7 +37,7 @@ class LaffVector
         ~LaffVector() {}
 
         LaffVector& LaffCopy(LaffVector &v);
-        LaffVector LaffSlice(int start, int finish, int inc=1);
+        LaffVector Slice(int start, int finish, int inc=1);
 
         void Display(); //print vector
 
@@ -85,7 +86,7 @@ LaffVector& LaffVector::LaffCopy(LaffVector &v)
 
 
 
-LaffVector LaffVector::LaffSlice(int start, int finish, int inc)
+LaffVector LaffVector::Slice(int start, int finish, int inc)
 {
     //Slice a vector
     //
@@ -221,3 +222,13 @@ double Norm2(const LaffVector &v)
     //
     return sqrt(Dot(v, v));
 }
+
+std::ostream &operator<<(std::ostream &output, const LaffVector &v)
+{
+
+    for(auto it = v._lvector.begin(); it != v._lvector.end(); it++)
+        output << *it << " ";
+    output << "\n";
+    return output;
+}
+
