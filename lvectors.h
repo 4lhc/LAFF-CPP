@@ -36,7 +36,7 @@ class LaffVector
         LaffVector(std::vector<double> &v);
         ~LaffVector() {}
 
-        LaffVector& LaffCopy(LaffVector &v);
+        LaffVector& Copy(LaffVector &v);
         LaffVector Slice(int start, int finish, int inc=1);
 
         void Display(); //print vector
@@ -62,7 +62,7 @@ LaffVector::LaffVector(std::vector<double> &v)
     : _lvector(v)
 {}
 
-LaffVector& LaffVector::LaffCopy(LaffVector &v)
+LaffVector& LaffVector::Copy(LaffVector &v)
 {
     //copy vector
     //y:=x
@@ -70,8 +70,8 @@ LaffVector& LaffVector::LaffCopy(LaffVector &v)
     //check if they are equal length
     if (this->Size() != v.Size())
     {
-        std::cerr << "Operation not permitted: size mismatch" << std::endl;
-        return *this;
+
+        throw std::invalid_argument("Size mismatch");
     }
 
     for(int i = 0; i<v.Size(); i++)
@@ -119,8 +119,7 @@ LaffVector LaffVector::Slice(int start, int finish, int inc)
     }
     else
     {
-        std::cerr << "Illegal operation range" << std::endl;
-        return *this;
+        throw std::invalid_argument("Illegal range");
     }
     return sliced_vector;
 }
@@ -180,7 +179,7 @@ LaffVector operator+(const LaffVector &v1, const LaffVector &v2)
     LaffVector added_v= v1;
     if (v2.Size() != v1.Size())
     {
-        throw std::invalid_argument("Size mismatch.");
+        throw std::invalid_argument("Size mismatch");
     }
 
     for(unsigned int i = 0; i<v1._lvector.size(); i++)
@@ -201,8 +200,7 @@ double Dot(const LaffVector &v1, const LaffVector &v2)
     //checking for equal length
     if (v1.Size() != v2.Size())
     {
-        std::cerr << "Operation not permitted: size mismatch" << std::endl;
-        return 0;
+        throw std::invalid_argument("Size mismatch");
     }
     double aplha{0};
 
