@@ -10,115 +10,56 @@
  */
 
 
-#include<iostream>
-#include<ctime>
-#include<cmath>
-#include<vector>
+#include <iostream>
+#include <ctime>
+#include <cmath>
+#include <vector>
+#include <stdexcept>
 
 
 class LaffVector
 {
-    private:
-        typedef std::vector<double>::const_iterator const_iter;
-        std::vector<double> _lvector{};
-        //construct with iterator values - used by simple slice method only
-        LaffVector( const_iter it_begin, const_iter it_end)
-            : _lvector( it_begin, it_end) {}
+    typedef std::vector<double>::const_iterator const_iter;
 
+    friend LaffVector operator*(const double &alpha, const LaffVector &v); //scale
+    friend LaffVector operator+(const LaffVector &v1, const LaffVector &v2); //Add
+    friend double Dot(const LaffVector &v1, const LaffVector &v2);
+    friend double Norm2(const LaffVector &v);
+
+    private:
+        std::vector<double> _lvector{};
 
     public:
         LaffVector(int size); //construct vector of zeros
+        LaffVector(int size, double elements); //construct vector of elements
         LaffVector(std::vector<double> &v);
         ~LaffVector() {}
 
-        LaffVector& LaffScale(double alpha);
         LaffVector& LaffCopy(LaffVector &v);
-        LaffVector& LaffAxpy(double alpha, LaffVector &v);
-        static double LaffDot(LaffVector &v1, LaffVector &v2);
-        static double LaffNorm2(LaffVector &v);
         LaffVector LaffSlice(int start, int finish, int inc=1);
 
         void Display(); //print vector
 
 
-        void Constant(double element);
-        void Random(int l_range, int u_range, int digits=2); //populate with random elements
+        void Randomize(int l_range, int u_range, int digits=2); //populate with random elements
         //in range
-        inline int Size() {return _lvector.size();}
+        int Size() const {return _lvector.size();} //called by friends
 
 
 };
 
-
+//Constructor definition
 LaffVector::LaffVector(int size)
     : _lvector(size, 0.0)
 {}
 
+LaffVector::LaffVector(int size, double elements)
+    : _lvector(size, elements)
+{}
+
 LaffVector::LaffVector(std::vector<double> &v)
-{ _lvector = v;}
-
-
-
-void LaffVector::Display()
-{
-    //function to print the vector
-    //
-    //
-    for(auto it = _lvector.begin(); it != _lvector.end(); it++)
-        std::cout << *it << " ";
-    std::cout << std::endl;
-
-}
-
-void LaffVector::Constant(double element)
-{
-    //populate the vector with constant elements
-    //
-    //
-    //std::vector<int>::iterator it = _lvector.begin();
-    auto it = _lvector.begin();
-    auto it_end = _lvector.end();
-    while(it != it_end)
-    {
-        *it = element;
-        it++;
-    }
-}
-
-
-void LaffVector::Random(int l_range, int u_range, int digits )
-{
-    //populate with random elements
-    //
-    //
-    srand(time(NULL)); //init seed
-    auto it = _lvector.begin();
-    auto it_end = _lvector.end();
-    int mf = pow(10, digits); //decimal points mult_factor
-    while(it != it_end)
-    {
-
-        *it =  static_cast<double>(rand() % (u_range * mf) + l_range * mf)/mf;
-        it++;
-    }
-
-}
-
-LaffVector& LaffVector::LaffScale( double alpha)
-{
-    //scale vector
-    //x:=ax
-    //
-    auto it = _lvector.begin();
-    auto it_end = _lvector.end();
-    while(it != it_end)
-    {
-        *it *= alpha;
-        it++;
-    }
-    return *this;
-
-}
+    : _lvector(v)
+{}
 
 LaffVector& LaffVector::LaffCopy(LaffVector &v)
 {
@@ -141,60 +82,8 @@ LaffVector& LaffVector::LaffCopy(LaffVector &v)
 }
 
 
-LaffVector& LaffVector::LaffAxpy(double alpha, LaffVector &v)
-{
-    //AXPY
-    //y:=ax+y
-    //
-    //checking for equal length
-    if (this->Size() != v.Size())
-    {
-        std::cerr << "Operation not permitted: size mismatch" << std::endl;
-        return *this;
-    }
-    //scale v aka x by a
-    LaffVector ax {v};
-    ax.LaffScale(alpha);
-
-    for(int i = 0; i<v.Size(); i++)
-    {
-        this->_lvector[i] += ax._lvector[i];
-    }
 
 
-    return *this;
-}
-
-
-double LaffVector::LaffDot( LaffVector &v1, LaffVector &v2)
-{
-    //Dot product
-    //a:=x'y
-    //
-    //checking for equal length
-    if (v1.Size() != v2.Size())
-    {
-        std::cerr << "Operation not permitted: size mismatch" << std::endl;
-        return 0;
-    }
-    double aplha{};
-
-    for(int i = 0; i<v1.Size(); i++)
-    {
-        aplha += v1._lvector[i] * v2._lvector[i];
-    }
-
-    return aplha;
-
-}
-
-double LaffVector::LaffNorm2(LaffVector &v)
-{
-    //Length of vector
-    //a:=||x||2
-    //
-    return sqrt(LaffDot(v, v));
-}
 
 LaffVector LaffVector::LaffSlice(int start, int finish, int inc)
 {
@@ -233,4 +122,102 @@ LaffVector LaffVector::LaffSlice(int start, int finish, int inc)
         return *this;
     }
     return sliced_vector;
+}
+
+void LaffVector::Display()
+{
+    //function to print the vector
+    //
+    //
+    for(auto it = _lvector.begin(); it != _lvector.end(); it++)
+        std::cout << *it << " ";
+    std::cout << std::endl;
+
+}
+
+
+void LaffVector::Randomize(int l_range, int u_range, int digits )
+{
+    //populate with random elements
+    //
+    //
+    srand(time(NULL)); //init seed
+    auto it = _lvector.begin();
+    auto it_end = _lvector.end();
+    int mf = pow(10, digits); //decimal points mult_factor
+    while(it != it_end)
+    {
+
+        *it =  static_cast<double>(rand() % (u_range * mf) + l_range * mf)/mf;
+        it++;
+    }
+
+}
+
+LaffVector operator*(const double &alpha, const LaffVector &v)
+{
+    //scale vector
+    //x:=ax
+    //
+    LaffVector scaled_v = v;
+    auto it = scaled_v._lvector.begin();
+    auto it_end = scaled_v._lvector.end();
+    while(it != it_end)
+    {
+        *it *= alpha;
+        it++;
+    }
+    return scaled_v;
+
+}
+
+LaffVector operator+(const LaffVector &v1, const LaffVector &v2)
+{
+    //x+y
+    //
+    //checking for equal length
+    LaffVector added_v= v1;
+    if (v2.Size() != v1.Size())
+    {
+        throw std::invalid_argument("Size mismatch.");
+    }
+
+    for(unsigned int i = 0; i<v1._lvector.size(); i++)
+    {
+        added_v = v1._lvector[i] + v2._lvector[i];
+    }
+
+
+    return v1;
+}
+
+
+double Dot(const LaffVector &v1, const LaffVector &v2)
+{
+    //Dot product
+    //a:=x'y
+    //
+    //checking for equal length
+    if (v1.Size() != v2.Size())
+    {
+        std::cerr << "Operation not permitted: size mismatch" << std::endl;
+        return 0;
+    }
+    double aplha{0};
+
+    for(int i = 0; i<v1.Size(); i++)
+    {
+        aplha += v1._lvector[i] * v2._lvector[i];
+    }
+    return aplha;
+}
+
+
+
+double Norm2(const LaffVector &v)
+{
+    //Length of vector
+    //a:=||x||2
+    //
+    return sqrt(Dot(v, v));
 }
