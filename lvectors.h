@@ -25,30 +25,35 @@ class LaffVector
     friend LaffVector operator+(const LaffVector &v1, const LaffVector &v2); //Add
     friend double Dot(const LaffVector &v1, const LaffVector &v2);
     friend double Norm2(const LaffVector &v);
+    friend bool Equal(const LaffVector &v1, const LaffVector &v2);
     friend std::ostream &operator<<(std::ostream &os, const LaffVector &v);
 
-    private:
-        std::vector<double> _lvector{};
+    protected:
+    std::vector<double> _lvector{};
 
     public:
-        LaffVector(int size); //construct vector of zeros
-        LaffVector(int size, double elements); //construct vector of elements
-        LaffVector(std::vector<double> &v);
-        ~LaffVector() {}
+    LaffVector(); //default
+    LaffVector(int size); //construct vector of zeros
+    LaffVector(int size, double elements); //construct vector of elements
+    LaffVector(std::vector<double> &v);
+    ~LaffVector() {}
 
-        LaffVector& Copy(LaffVector &v);
-        LaffVector Slice(int start, int finish, int inc=1);
+    LaffVector& Copy(LaffVector &v);
+    LaffVector Slice(int start, int finish, int inc=1);
 
-        void Display(); //print vector
+    void Display(); //print vector
 
 
-        void Randomize(int l_range, int u_range, int digits=2); //populate with random elements
-        //in range
-        int Size() const {return _lvector.size();} //called by friends
+    void Randomize(int l_range, int u_range, int digits=2); //populate with random elements
+    //in range
+    int Size() const {return _lvector.size();} //called by friends
 
 
 };
 
+LaffVector::LaffVector()
+    : _lvector(0)
+{}
 //Constructor definition
 LaffVector::LaffVector(int size)
     : _lvector(size, 0.0)
@@ -220,6 +225,27 @@ double Norm2(const LaffVector &v)
     //
     return sqrt(Dot(v, v));
 }
+
+
+bool Equal(const LaffVector &v1, const LaffVector &v2)
+{
+    //check if two vectors are equal
+    bool are_equal = false;
+    if (v1.Size() == v2.Size())
+    {
+        are_equal = true;
+        for (int i = 0; i < v1.Size(); i++)
+        {
+            if (v1._lvector[i] != v2._lvector[i])
+            {
+                are_equal = false;
+                break;
+            }
+        }
+    }
+    return are_equal;
+}
+
 
 std::ostream &operator<<(std::ostream &output, const LaffVector &v)
 {
