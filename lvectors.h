@@ -41,9 +41,6 @@ class LaffVector
     LaffVector& Copy(LaffVector &v);
     LaffVector Slice(int start, int finish, int inc=1);
 
-    void Display(); //print vector
-
-
     void Randomize(int l_range, int u_range, int digits=2); //populate with random elements
     //in range
     int Size() const {return _lvector.size();} //called by friends
@@ -127,17 +124,6 @@ LaffVector LaffVector::Slice(int start, int finish, int inc)
         throw std::invalid_argument("Illegal range");
     }
     return sliced_vector;
-}
-
-void LaffVector::Display()
-{
-    //function to print the vector
-    //
-    //
-    for(auto it = _lvector.begin(); it != _lvector.end(); it++)
-        std::cout << *it << " ";
-    std::cout << std::endl;
-
 }
 
 
