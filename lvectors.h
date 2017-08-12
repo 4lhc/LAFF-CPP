@@ -182,11 +182,11 @@ LaffVector operator+(const LaffVector &v1, const LaffVector &v2)
 
     for(unsigned int i = 0; i<v1._lvector.size(); i++)
     {
-        added_v = v1._lvector[i] + v2._lvector[i];
+        added_v._lvector[i] = v1._lvector[i] + v2._lvector[i];
     }
 
 
-    return v1;
+    return added_v;
 }
 
 
@@ -243,9 +243,12 @@ bool Equal(const LaffVector &v1, const LaffVector &v2)
 std::ostream &operator<<(std::ostream &output, const LaffVector &v)
 {
 
+    if (v._name.size() > 0)
+        output << v._name << ": ";
+    output << "{ ";
     for(auto it = v._lvector.begin(); it != v._lvector.end(); it++)
         output << *it << " ";
-    output << "\n";
+    output << " }\n";
     return output;
 }
 
