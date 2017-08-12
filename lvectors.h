@@ -245,10 +245,10 @@ std::ostream &operator<<(std::ostream &output, const LaffVector &v)
 
     if (v._name.size() > 0)
         output << v._name << ": ";
-    output << "{ ";
+    output << "( ";
     for(auto it = v._lvector.begin(); it != v._lvector.end(); it++)
         output << *it << " ";
-    output << " }\n";
+    output << " )\n";
     return output;
 }
 
