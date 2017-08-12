@@ -15,6 +15,7 @@
 #include <cmath>
 #include <vector>
 #include <stdexcept>
+#include <string>
 
 
 class LaffVector
@@ -30,12 +31,14 @@ class LaffVector
 
     protected:
     std::vector<double> _lvector{};
+    std::string _name{};
 
     public:
     LaffVector(); //default
     LaffVector(int size); //construct vector of zeros
     LaffVector(int size, double elements); //construct vector of elements
     LaffVector(std::vector<double> &v);
+    LaffVector(std::vector<double> &v, std::string &vname);
     ~LaffVector() {}
 
     LaffVector& Copy(LaffVector &v);
@@ -62,6 +65,10 @@ LaffVector::LaffVector(int size, double elements)
 
 LaffVector::LaffVector(std::vector<double> &v)
     : _lvector(v)
+{}
+
+LaffVector::LaffVector(std::vector<double> &v, std::string &vname)
+    : _lvector(v), _name(vname)
 {}
 
 LaffVector& LaffVector::Copy(LaffVector &v)
