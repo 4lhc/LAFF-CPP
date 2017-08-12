@@ -37,8 +37,8 @@ class LaffVector
     LaffVector(); //default
     LaffVector(int size); //construct vector of zeros
     LaffVector(int size, double elements); //construct vector of elements
-    LaffVector(std::vector<double> &v);
-    LaffVector(std::vector<double> &v, std::string &vname);
+    LaffVector(std::vector<double> v);
+    LaffVector(std::vector<double> v, std::string &vname);
     ~LaffVector() {}
 
     LaffVector& Copy(LaffVector &v);
@@ -63,11 +63,11 @@ LaffVector::LaffVector(int size, double elements)
     : _lvector(size, elements)
 {}
 
-LaffVector::LaffVector(std::vector<double> &v)
+LaffVector::LaffVector(std::vector<double> v)
     : _lvector(v)
 {}
 
-LaffVector::LaffVector(std::vector<double> &v, std::string &vname)
+LaffVector::LaffVector(std::vector<double> v, std::string &vname)
     : _lvector(v), _name(vname)
 {}
 
