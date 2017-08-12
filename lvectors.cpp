@@ -32,8 +32,8 @@ int main()
     std::cout << "xc " << xc;
 
     //Define a LaffVector z with a vector
-    std::vector<double> v{1.2, 2.3, 4.21, 1.3, 1.0};
-    LaffVector z{v};
+    //std::vector<double> v{1.2, 2.3, 4.21, 1.3, 1.0};
+    LaffVector z{{1.2, 2.3, 4.21, 1.3, 1.0}};
     std::cout << "z: " << z;
 
     //ADD
