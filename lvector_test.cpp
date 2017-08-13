@@ -32,7 +32,6 @@ int main()
     std::cout << "xc " << xc;
 
     //Define a LaffVector z with a vector
-    //std::vector<double> v{1.2, 2.3, 4.21, 1.3, 1.0};
     LaffVector z{{1.2, 2.3, 4.21, 1.3, 1.0}};
     std::cout << "z: " << z;
 
@@ -51,7 +50,6 @@ int main()
     //DOT & NORM2
     std::cout << "dot(x, y) = " << Dot(x, y) << std::endl;
     std::cout << "length(x) = " << Norm2(x) << std::endl;
-    std::cout << "length(y) = " << Norm2(y) << std::endl;
 
     LaffVector r(10);
     r.Randomize(0, 50);
