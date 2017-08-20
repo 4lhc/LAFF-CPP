@@ -53,6 +53,10 @@ LaffVector& LaffVector::Copy(LaffVector &v)
 
 
 
+double LaffVector::operator[](int index)
+{
+    return _lvector[index];
+}
 
 
 LaffVector LaffVector::Slice(int start, int finish, int inc)
@@ -214,6 +218,7 @@ std::ostream &operator<<(std::ostream &output, const LaffVector &v)
 
 LaffVector LaffVector::Transform(std::vector<std::vector<double>> &tr_mat)
 {
+    //TODO: match size of transformation_matrix to vector
     std::vector<LaffVector> transformation_matrix;
     LaffVector transformed_vector;
     if ( Size() == 2)
@@ -239,34 +244,51 @@ LaffVector LaffVector::Transform(std::vector<std::vector<double>> &tr_mat)
 }
 
 
+
+
+LaffVector LaffVector::Rotate(double angle, LaffVector &rot_axis)
+{
+    //https://en.wikipedia.org/wiki/Euler–Rodrigues_formula
+
+    double a{}, b{}, c{}, d{};
+    angle *= PI/180;
+
+    LaffVector unit_axis = (1/Norm2(rot_axis))*rot_axis;
+    double kx = unit_axis[0];
+    double ky = unit_axis[1];
+    double kz = unit_axis[2];
+
+    a = cos(angle/2);
+    b = kx*sin(angle/2);
+    c = ky*sin(angle/2);
+    d = kz*sin(angle/2);
+
+
+    std::vector<std::vector<double>> tr_mat{
+        {a*a + b*b - c*c - d*d, 2*(b*c - a*d), 2*(b*d + a*c)},
+        {2*(b*c + a*d), a*a - b*b + c*c - d*d,  2*(c*d - a*b)},
+        {2*(b*d - a*c), 2*(c*d + a*b), a*a - b*b - c*c + d*d}};
+
+    double limit = 0.0002;
+    for(unsigned int i = 0; i < tr_mat.size(); i++)
+    {
+        for(unsigned int j=0; j < tr_mat[i].size(); j++)
+        {
+            if (fabs(tr_mat[i][j]) <= limit) tr_mat[i][j] = 0;
+        }
+    }
+
+    return this->Transform(tr_mat);
+}
+
+
 LaffVector LaffVector::Rotate(double angle)
 {
 
-    if ( Size() != 2)
-    {
-        throw std::invalid_argument("Not a 2D vector");
-    }
-
-    double cos_value{}, sin_value{};
-    //converting angles from degrees to radians
-    // radians = (degrees*PI/180)
-    angle *= PI/180;
-
-    cos_value = cos(angle);
-    sin_value = sin(angle);
-
-    //rounding off
-    const double limit = 0.0002;
-    if (fabs(sin_value) <= limit)
-    {
-        sin_value = 0;
-    }
-    if (fabs(cos_value) <= limit)
-    {
-        cos_value = 0;
-    }
-
-    std::vector<std::vector<double>> tr_mat{{cos_value, -sin_value}, {sin_value, cos_value}};
-    return this->Transform(tr_mat);
+    LaffVector rot_axis{{0, 0, 1}}; //rotated around z axis
+    _lvector.push_back(0); //add zero to make the size 3
+    LaffVector rotated_vector =  Rotate(angle, rot_axis);
+    rotated_vector._lvector.pop_back();
+    return rotated_vector;
 
 }

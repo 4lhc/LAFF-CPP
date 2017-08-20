@@ -45,10 +45,12 @@ class LaffVector
     LaffVector(std::vector<double> v, std::string &vname);
     ~LaffVector() {}
 
+    double operator[](int index);
     LaffVector& Copy(LaffVector &v);
     LaffVector Slice(int start, int finish, int inc=1);
     LaffVector Transform(std::vector<std::vector<double>> &tr_mat);
     LaffVector Rotate(double angle);
+    LaffVector Rotate(double angle, LaffVector &rot_axis);
 
     void Randomize(int l_range, int u_range, int digits=2); //populate with random elements
     //in range
