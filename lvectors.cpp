@@ -212,3 +212,61 @@ std::ostream &operator<<(std::ostream &output, const LaffVector &v)
     return output;
 }
 
+LaffVector LaffVector::Transform(std::vector<std::vector<double>> &tr_mat)
+{
+    std::vector<LaffVector> transformation_matrix;
+    LaffVector transformed_vector;
+    if ( Size() == 2)
+    {
+        transformation_matrix = {{tr_mat[0]}, {tr_mat[1]}};
+        auto &tm = transformation_matrix;
+        transformed_vector = {{ Dot(tm[0], *this), Dot(tm[1], *this) }};
+    }
+
+    else if ( Size() == 3)
+    {
+        transformation_matrix = {{tr_mat[0]}, {tr_mat[1]}, {tr_mat[2]}};
+        auto &tm = transformation_matrix;
+        transformed_vector = {{ Dot(tm[0], *this), Dot(tm[1], *this), Dot(tm[2], *this) }};
+    }
+
+    else
+    {
+        throw std::invalid_argument("Not a 2D or 3D vector");
+    }
+
+    return transformed_vector;
+}
+
+
+LaffVector LaffVector::Rotate(double angle)
+{
+
+    if ( Size() != 2)
+    {
+        throw std::invalid_argument("Not a 2D vector");
+    }
+
+    double cos_value{}, sin_value{};
+    //converting angles from degrees to radians
+    // radians = (degrees*PI/180)
+    angle *= PI/180;
+
+    cos_value = cos(angle);
+    sin_value = sin(angle);
+
+    //rounding off
+    const double limit = 0.0002;
+    if (fabs(sin_value) <= limit)
+    {
+        sin_value = 0;
+    }
+    if (fabs(cos_value) <= limit)
+    {
+        cos_value = 0;
+    }
+
+    std::vector<std::vector<double>> tr_mat{{cos_value, -sin_value}, {sin_value, cos_value}};
+    return this->Transform(tr_mat);
+
+}

@@ -11,6 +11,7 @@
 #ifndef LVECTORS_H
 #define LVECTORS_H
 
+
 #include <iostream>
 #include <ctime>
 #include <cmath>
@@ -18,6 +19,8 @@
 #include <stdexcept>
 #include <string>
 
+
+const double PI = atan(1) * 4;
 
 class LaffVector
 {
@@ -44,6 +47,8 @@ class LaffVector
 
     LaffVector& Copy(LaffVector &v);
     LaffVector Slice(int start, int finish, int inc=1);
+    LaffVector Transform(std::vector<std::vector<double>> &tr_mat);
+    LaffVector Rotate(double angle);
 
     void Randomize(int l_range, int u_range, int digits=2); //populate with random elements
     //in range
