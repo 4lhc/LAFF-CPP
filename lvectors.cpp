@@ -288,7 +288,9 @@ LaffVector LaffVector::Rotate(double angle)
     LaffVector rot_axis{{0, 0, 1}}; //rotated around z axis
     _lvector.push_back(0); //add zero to make the size 3
     LaffVector rotated_vector =  Rotate(angle, rot_axis);
-    rotated_vector._lvector.pop_back();
+    rotated_vector._lvector.pop_back(); //reduce the size back to 2
     return rotated_vector;
 
 }
+
+

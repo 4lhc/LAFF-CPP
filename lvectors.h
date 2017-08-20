@@ -32,6 +32,7 @@ class LaffVector
     friend double Norm2(const LaffVector &v);
     friend bool Equal(const LaffVector &v1, const LaffVector &v2);
     friend std::ostream &operator<<(std::ostream &os, const LaffVector &v);
+    //friend std::istream &operator>>(std::istream &is, const LaffVector &v);
 
     protected:
     std::vector<double> _lvector{};
